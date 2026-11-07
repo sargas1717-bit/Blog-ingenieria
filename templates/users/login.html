@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar sesión - Blog de Ingeniería{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto py-10 px-4 sm:px-6 lg:px-8">
+    <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-2xl font-bold text-center text-gray-900 mb-6">Iniciar sesión</h2>
+        
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                    Usuario o contraseña incorrectos.
+                </div>
+            {% endif %}
+            
+            <div>
+                <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700">Usuario</label>
+                {{ form.username }}
+            </div>
+            
+            <div>
+                <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-gray-700">Contraseña</label>
+                {{ form.password }}
+            </div>
+            
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 font-medium">
+                Iniciar sesión
+            </button>
+        </form>
+        
+        <p class="mt-4 text-center text-sm text-gray-600">
+            ¿No tienes cuenta? <a href="{% url 'users:register' %}" class="text-blue-600 hover:text-blue-700">Regístrate</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

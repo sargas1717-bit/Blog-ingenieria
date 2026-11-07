@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}{% if object %}Editar{% else %}Nuevo{% endif %} Proyecto - Blog de Ingeniería{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">{% if object %}Editar proyecto{% else %}Crear proyecto{% endif %}</h2>
+        
+        <form method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                    Por favor corrige los errores en el formulario.
+                </div>
+            {% endif %}
+            
+            <div>
+                <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700">Título</label>
+                {{ form.title }}
+            </div>
+            
+            <div>
+                <label for="{{ form.slug.id_for_label }}" class="block text-sm font-medium text-gray-700">Slug (URL amigable)</label>
+                {{ form.slug }}
+            </div>
+            
+            <div>
+                <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700">Descripción corta</label>
+                {{ form.description }}
+            </div>
+            
+            <div>
+                <label for="{{ form.content.id_for_label }}" class="block text-sm font-medium text-gray-700">Contenido</label>
+                {{ form.content }}
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="{{ form.github_link.id_for_label }}" class="block text-sm font-medium text-gray-700">Enlace GitHub</label>
+                    {{ form.github_link }}
+                </div>
+                <div>
+                    <label for="{{ form.demo_link.id_for_label }}" class="block text-sm font-medium text-gray-700">Enlace Demo</label>
+                    {{ form.demo_link }}
+                </div>
+            </div>
+            
+            <div>
+                <label for="{{ form.image.id_for_label }}" class="block text-sm font-medium text-gray-700">Imagen</label>
+                {{ form.image }}
+            </div>
+            
+            <div>
+                <label for="{{ form.branch.id_for_label }}" class="block text-sm font-medium text-gray-700">Rama de Ingeniería</label>
+                {{ form.branch }}
+            </div>
+            
+            <button type="submit" class="w-full bg-blue-600 text-white py-3 px-4 rounded hover:bg-blue-700 font-medium">
+                {% if object %}Guardar cambios{% else %}Publicar proyecto{% endif %}
+            </button>
+        </form>
+        
+        <p class="mt-4 text-center text-sm text-gray-600">
+            <a href="{% url 'projects:list' %}" class="text-blue-600 hover:text-blue-700">Volver a proyectos</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

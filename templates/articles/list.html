@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Artículos - Blog de Ingeniería{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-900">Artículos</h2>
+        {% if user.is_authenticated %}
+        <a href="{% url 'articles:create' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            + Nuevo artículo
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="space-y-4">
+        {% for article in articles %}
+        <div class="bg-white shadow rounded-lg p-6 hover:shadow-md transition-shadow border border-gray-100">
+            <div class="flex justify-between items-start mb-3">
+                <h3 class="text-xl font-semibold text-gray-900">{{ article.title }}</h3>
+                <span class="px-2 py-1 text-xs font-medium 
+                    {% if article.status == 'published' %}bg-green-100 text-green-700{% else %}bg-yellow-100 text-yellow-700{% endif %} rounded">
+                    {{ article.get_status_display }}
+                </span>
+            </div>
+            <p class="text-gray-600 mb-4">{{ article.content|truncatechars:200 }}</p>
+            <div class="flex items-center justify-between text-sm text-gray-500">
+                <div class="flex items-center space-x-2">
+                    <span>{{ article.author.username }}</span>
+                    {% if article.branch %}<span>· {{ article.branch.name }}</span>{% endif %}
+                    <span>· {{ article.created_at|date:"d/m/Y" }}</span>
+                </div>
+                <span>{{ article.views }} vistas</span>
+            </div>
+            <a href="{% url 'articles:detail' slug=article.slug %}" class="text-blue-600 hover:text-blue-700 font-medium mt-2 inline-block">Leer más →</a>
+        </div>
+        {% empty %}
+        <p class="text-gray-500 text-center py-10">No hay artículos publicados.</p>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+    <div class="mt-8 flex justify-center space-x-2">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50">Anterior</a>
+        {% endif %}
+        <span class="px-3 py-2 bg-gray-100 rounded text-gray-600">Página {{ page_obj.number }} de {{ paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50">Siguiente</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

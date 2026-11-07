@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Proyectos - Blog de Ingeniería{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-900">Proyectos</h2>
+        {% if user.is_authenticated %}
+        <a href="{% url 'projects:create' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            + Nuevo proyecto
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for project in projects %}
+        <div class="bg-white shadow rounded-lg overflow-hidden hover:shadow-md transition-shadow">
+            {% if project.image %}
+            <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-48 object-cover">
+            {% endif %}
+            <div class="p-5">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-lg font-semibold text-gray-900">{{ project.title }}</h3>
+                    <span class="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded">
+                        {{ project.views }} vistas
+                    </span>
+                </div>
+                <p class="text-gray-600 text-sm mb-3">{{ project.description|truncatechars:120 }}</p>
+                <div class="flex items-center justify-between text-xs text-gray-500 mb-3">
+                    <div class="flex items-center space-x-1">
+                        <span>{{ project.author.username }}</span>
+                        {% if project.branch %}<span>· {{ project.branch.name }}</span>{% endif %}
+                    </div>
+                    <span>· {{ project.likes }} likes</span>
+                </div>
+                <a href="{% url 'projects:detail' slug=project.slug %}" class="text-blue-600 hover:text-blue-700 font-medium">Ver proyecto →</a>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-gray-500 text-center py-10">No hay proyectos publicados.</p>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+    <div class="mt-8 flex justify-center space-x-2">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50">Anterior</a>
+        {% endif %}
+        <span class="px-3 py-2 bg-gray-100 rounded text-gray-600">Página {{ page_obj.number }} de {{ paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50">Siguiente</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

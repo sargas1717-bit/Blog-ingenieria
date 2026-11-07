@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}{% if object %}Editar{% else %}Nuevo{% endif %} Artículo - Blog de Ingeniería{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">{% if object %}Editar artículo{% else %}Crear artículo{% endif %}</h2>
+        
+        <form method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                    Por favor corrige los errores en el formulario.
+                </div>
+            {% endif %}
+            
+            <div>
+                <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700">Título</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.title.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.slug.id_for_label }}" class="block text-sm font-medium text-gray-700">Slug (URL amigable)</label>
+                {{ form.slug }}
+                {% if form.slug.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.slug.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.content.id_for_label }}" class="block text-sm font-medium text-gray-700">Contenido</label>
+                {{ form.content }}
+                {% if form.content.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.content.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.cover_image.id_for_label }}" class="block text-sm font-medium text-gray-700">Imagen de portada</label>
+                {{ form.cover_image }}
+                {% if form.cover_image.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.cover_image.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="{{ form.status.id_for_label }}" class="block text-sm font-medium text-gray-700">Estado</label>
+                    {{ form.status }}
+                    {% if form.status.errors %}
+                        <p class="text-red-500 text-sm mt-1">{{ form.status.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <div>
+                    <label for="{{ form.branch.id_for_label }}" class="block text-sm font-medium text-gray-700">Rama de Ingeniería</label>
+                    {{ form.branch }}
+                    {% if form.branch.errors %}
+                        <p class="text-red-500 text-sm mt-1">{{ form.branch.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <button type="submit" class="w-full bg-blue-600 text-white py-3 px-4 rounded hover:bg-blue-700 font-medium">
+                {% if object %}Guardar cambios{% else %}Publicar artículo{% endif %}
+            </button>
+        </form>
+        
+        <p class="mt-4 text-center text-sm text-gray-600">
+            <a href="{% url 'articles:list' %}" class="text-blue-600 hover:text-blue-700">Volver a artículos</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

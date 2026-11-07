@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article.title }} - Blog de Ingeniería{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <article class="bg-white shadow rounded-lg p-6 mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ article.title }}</h1>
+        
+        <div class="flex items-center space-x-4 text-sm text-gray-500 mb-6 border-b border-gray-200 pb-4">
+            <span>{{ article.author.username }}</span>
+            {% if article.branch %}<span>· {{ article.branch.name }}</span>{% endif %}
+            <span>· {{ article.created_at|date:"d/m/Y" }}</span>
+            <span>· {{ article.views }} vistas</span>
+        </div>
+
+        <div class="prose prose-lg max-w-none text-gray-700">
+            {{ article.content|linebreaks }}
+        </div>
+    </article>
+
+    {% if user.is_authenticated %}
+    <div class="bg-white shadow rounded-lg p-6 mb-8">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Agregar comentario</h3>
+        <form method="post" action="{% url 'comments:create' content_type='article' object_id=article.pk %}" class="space-y-4">
+            {% csrf_token %}
+            {{ form.content }}
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Comentar</button>
+        </form>
+    </div>
+    {% else %}
+    <div class="bg-gray-50 rounded-lg p-6 mb-8 text-center">
+        <p class="text-gray-600">Inicia sesión para comentar.</p>
+        <a href="{% url 'users:login' %}" class="text-blue-600 hover:text-blue-700">Iniciar sesión</a>
+    </div>
+    {% endif %}
+
+    <div class="bg-white shadow rounded-lg p-6">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Comentarios ({{ comments.count }})</h3>
+        {% if comments %}
+        <div class="space-y-4">
+            {% for comment in comments %}
+            <div class="border-b border-gray-100 pb-4 last:border-0">
+                <div class="flex items-center space-x-2 text-sm text-gray-500 mb-1">
+                    <span class="font-medium">{{ comment.author.username }}</span>
+                    <span>· {{ comment.created_at|date:"d/m/Y H:i" }}</span>
+                </div>
+                <p class="text-gray-700">{{ comment.content }}</p>
+                {% if user.is_authenticated and (user == comment.author or user.is_staff) %}
+                <div class="mt-2">
+                    <a href="{% url 'comments:update' pk=comment.pk %}" class="text-blue-600 text-xs hover:text-blue-700">Editar</a>
+                    <a href="{% url 'comments:delete' pk=comment.pk %}" class="text-red-600 text-xs hover:text-red-700 ml-2">Eliminar</a>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-500">No hay comentarios aún.</p>
+        {% endif %}
+    </div>
+</div>
+</div>
+</div>
+{% endblock %}
+

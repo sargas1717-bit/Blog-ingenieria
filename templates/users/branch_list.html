@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Ramás de Ingeniería - Blog de Ingeniería{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h2 class="text-2xl font-bold text-gray-900 mb-8">Ramás de Ingeniería</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for branch in branches %}
+        <div class="bg-white shadow rounded-lg p-6 hover:shadow-md transition-shadow">
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ branch.name }}</h3>
+            <p class="text-gray-600 text-sm mb-4">{{ branch.users.count }} ingenieros</p>
+            <a href="{% url 'users:branch_detail' slug=branch.slug %}" class="text-blue-600 hover:text-blue-700 font-medium">
+                Ver contenido →
+            </a>
+        </div>
+        {% empty %}
+        <p class="text-gray-500">No hay ramas de ingeniería disponibles.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

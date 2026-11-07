@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} - Blog de Ingeniería{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <article class="bg-white shadow rounded-lg overflow-hidden">
+        {% if project.image %}
+        <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-64 object-cover">
+        {% endif %}
+        <div class="p-6">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ project.title }}</h1>
+            
+            <div class="flex items-center space-x-4 text-sm text-gray-500 mb-6 border-b border-gray-200 pb-4">
+                <span>{{ project.author.username }}</span>
+                {% if project.branch %}<span>· {{ project.branch.name }}</span>{% endif %}
+                <span>· {{ project.created_at|date:"d/m/Y" }}</span>
+                <span>· {{ project.views }} vistas</span>
+                <span>· {{ project.likes }} likes</span>
+            </div>
+
+            <div class="prose prose-lg max-w-none text-gray-700 mb-6">
+                {{ project.content|linebreaks }}
+            </div>
+
+            {% if project.github_link or project.demo_link %}
+            <div class="flex space-x-3 mb-6">
+                {% if project.github_link %}
+                <a href="{{ project.github_link }}" target="_blank" class="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900">
+                    Ver en GitHub
+                </a>
+                {% endif %}
+                {% if project.demo_link %}
+                <a href="{{ project.demo_link }}" target="_blank" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    Ver Demo
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="flex items-center space-x-4">
+                {% if user.is_authenticated %}
+                <form method="post" action="{% url 'projects:like_toggle' pk=project.pk %}" id="like-form">
+                    {% csrf_token %}
+                    <button type="submit" class="px-4 py-2 {% if user_liked %}bg-red-600{% else %}bg-blue-600{% endif %} text-white rounded hover:opacity-90">
+                        {% if user_liked %}❤ Quitar like{% else %}🤍 Me gusta{% endif %}
+                    </button>
+                </form>
+                {% else %}
+                <a href="{% url 'users:login' %}" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">Inicia sesión para dar like</a>
+                {% endif %}
+                
+                {% if user.is_authenticated and (user == project.author or user.is_staff) %}
+                <a href="{% url 'projects:update' slug=project.slug %}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Editar</a>
+                <a href="{% url 'projects:delete' slug=project.slug %}" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Eliminar</a>
+                {% endif %}
+            </div>
+        </div>
+    </article>
+
+    {% if user.is_authenticated %}
+    <div class="bg-white shadow rounded-lg p-6 mt-8">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Agregar comentario</h3>
+        <form method="post" action="{% url 'comments:create' content_type='project' object_id=project.pk %}" class="space-y-4">
+            {% csrf_token %}
+            {{ comment_form.content }}
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Comentar</button>
+        </form>
+    </div>
+    {% else %}
+    <div class="bg-gray-50 rounded-lg p-6 mt-8 text-center">
+        <p class="text-gray-600">Inicia sesión para comentar.</p>
+        <a href="{% url 'users:login' %}" class="text-blue-600 hover:text-blue-700">Iniciar sesión</a>
+    </div>
+    {% endif %}
+
+    <div class="bg-white shadow rounded-lg p-6 mt-8">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Comentarios ({{ comments.count }})</h3>
+        {% if comments %}
+        <div class="space-y-4">
+            {% for comment in comments %}
+            <div class="border-b border-gray-100 pb-4 last:border-0">
+                <div class="flex items-center space-x-2 text-sm text-gray-500 mb-1">
+                    <span class="font-medium">{{ comment.author.username }}</span>
+                    <span>· {{ comment.created_at|date:"d/m/Y H:i" }}</span>
+                </div>
+                <p class="text-gray-700">{{ comment.content }}</p>
+                {% if user.is_authenticated and (user == comment.author or user.is_staff) %}
+                <div class="mt-2">
+                    <a href="{% url 'comments:update' pk=comment.pk %}" class="text-blue-600 text-xs hover:text-blue-700">Editar</a>
+                    <a href="{% url 'comments:delete' pk=comment.pk %}" class="text-red-600 text-xs hover:text-red-700 ml-2">Eliminar</a>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-500">No hay comentarios aún.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Registro - Blog de Ingeniería{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto py-10 px-4 sm:px-6 lg:px-8">
+    <div class="bg-white shadow rounded-lg p-6">
+        <h2 class="text-2xl font-bold text-center text-gray-900 mb-6">Crear cuenta</h2>
+        
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                    Por favor corrige los errores en el formulario.
+                </div>
+            {% endif %}
+            
+            <div>
+                <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700">Usuario</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.username.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700">Email</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.email.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.profession.id_for_label }}" class="block text-sm font-medium text-gray-700">Profesión</label>
+                {{ form.profession }}
+                {% if form.profession.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.profession.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.engineering_branch.id_for_label }}" class="block text-sm font-medium text-gray-700">Rama de Ingeniería</label>
+                {{ form.engineering_branch }}
+                {% if form.engineering_branch.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.engineering_branch.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700">Contraseña</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.password1.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700">Confirmar contraseña</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.password2.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 font-medium">
+                Crear cuenta
+            </button>
+        </form>
+        
+        <p class="mt-4 text-center text-sm text-gray-600">
+            ¿Ya tienes cuenta? <a href="{% url 'users:login' %}" class="text-blue-600 hover:text-blue-700">Inicia sesión</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
